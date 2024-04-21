@@ -4,7 +4,7 @@ app.use(express.json())
 
 const port = 3000;
 
-let log : Array<Array<number | string>> = [];
+let log : Array<Array<any>> = [];
 
 function createTable(tableData: Array<Array<string | number>>) : string {
     var res = "";
@@ -32,7 +32,8 @@ app.get('/', (req, res) => {
 })
 
 app.post('/logger/', (req, res) => {
-    log.push([req.body.id, req.body.timestampt, req.body.latitude, req.body.longitude])
+    console.log("got connection!")
+    log.push([req.body.id, req.body.timestamp, req.body.lat, req.body.long])
     res.send()
     console.log(log)
 })

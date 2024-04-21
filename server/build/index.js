@@ -32,7 +32,8 @@ app.get('/', (req, res) => {
 </html>`);
 });
 app.post('/logger/', (req, res) => {
-    log.push([req.body.id, req.body.timestampt, req.body.latitude, req.body.longitude]);
+    console.log("got connection!");
+    log.push([req.body.id, req.body.timestamp, req.body.lat, req.body.long]);
     res.send();
     console.log(log);
 });
