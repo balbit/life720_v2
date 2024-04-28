@@ -8,6 +8,8 @@ export const getStyles = (theme: 'light' | 'dark') => {
     container: {
       flex: 1,
       backgroundColor: selectedTheme.backgroundColor,
+      justifyContent: 'center', 
+      alignItems: 'center'
     },
     titleText: {
       fontSize: 24,
@@ -20,7 +22,8 @@ export const getStyles = (theme: 'light' | 'dark') => {
     },
     button: {
       backgroundColor: selectedTheme.primaryColor,
-      padding: 10,
+      margin: 20,
+      padding: 0,
       borderRadius: 5,
     },
     buttonText: {
