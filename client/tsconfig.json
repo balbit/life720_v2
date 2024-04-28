@@ -1,3 +1,16 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json"
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions":{
+    "baseUrl": "./", // This should be the base directory that contains your 'src' folder
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@config/*": ["src/config/*"],
+      "@constants/*": ["src/constants/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@navigation/*": ["src/navigation/*"],
+      "@screens/*": ["src/screens/*"],
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  }
 }

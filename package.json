@@ -9,6 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-plugin-module-resolver": "^5.0.2",
     "expo": "^50.0.17"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.24.1",
+    "eslint-import-resolver-babel-module": "^5.3.2"
   }
 }
