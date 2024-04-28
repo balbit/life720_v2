@@ -1,3 +1,10 @@
 # Life 720
 
-> source env.sh
+```
+# Set up path, etc
+source env.sh
+
+# Run server
+cd server
+npm start
+```

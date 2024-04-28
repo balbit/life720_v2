@@ -1,7 +1,7 @@
 {
   "name": "life720",
   "version": "1.0.0",
-  "description": "",
+  "description": "> source env.sh",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
