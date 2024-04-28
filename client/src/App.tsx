@@ -7,10 +7,15 @@
 
 import React from 'react';
 import HomeScreen from '@screens/HomeScreen';
+import { ThemeProvider } from '@styles/ThemeContext';
 
 
 function App(): React.JSX.Element {
-  return <HomeScreen />
+  return (
+    <ThemeProvider>
+      <HomeScreen />
+    </ThemeProvider>
+  )
 }
 
 export default App;

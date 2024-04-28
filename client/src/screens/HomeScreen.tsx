@@ -3,6 +3,7 @@ import {View, Button} from 'react-native';
 
 import Title from '@components/Title'
 import LocationInfo from '@components/LocationInfo';
+import ThemeToggle from '@components/ThemeToggle';
 
 import {getLocation} from '@services/LocationService';
 import {sendLocation} from '@services/ServerService';
@@ -37,6 +38,9 @@ function HomeScreen(): React.JSX.Element {
         <Button title="Update Location" onPress={updateLocation} color={style.button.backgroundColor}/>
       </View>
       <LocationInfo latitude={lat} longitude={long} />
+      <View style={style.toggleContainer}>
+        <ThemeToggle />
+      </View>
     </View>
   );
 }

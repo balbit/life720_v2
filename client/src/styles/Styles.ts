@@ -31,5 +31,10 @@ export const getStyles = (theme: 'light' | 'dark') => {
       fontSize: 16,
       fontWeight: 'bold',
     },
+    toggleContainer: {
+      position: 'absolute',
+      top: 20,
+      right: 20,
+    },
   });
 };
