@@ -34,15 +34,17 @@ const styles = StyleSheet.create({
 function App(): React.JSX.Element {
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
+  const [num, setNum] = useState(0);
 
   let update_location = () => {
     Geolocation.requestAuthorization();
     Geolocation.getCurrentPosition(
       position => {
-        console.log("got location!");
+        console.log('got location!', num);
 
         setLat(position.coords.latitude);
         setLong(position.coords.longitude);
+        setNum(num + 1);
 
         fetch('http://10.29.191.69:3000/logger/', {
           method: 'POST',
@@ -62,7 +64,7 @@ function App(): React.JSX.Element {
       error => {
         console.log(error.message);
       },
-      { enableHighAccuracy: false, timeout: 20000}
+      {enableHighAccuracy: false, timeout: 20000}
     );
   }
 
@@ -77,13 +79,16 @@ function App(): React.JSX.Element {
 
       <View style={{margin: 20}}>
         <Button
-        title="Update Location"
-        onPress={() => {update_location();}}
-        color="black"/>
+          title="Update Location"
+          onPress={() => {
+            update_location();
+          }}
+          color="black"/>
       </View>
 
       <Text> Latitude: {lat} </Text>
       <Text> Longitude: {long} </Text>
+      <Text> Number of updates: {num} </Text>
     </View>
   );
 }
