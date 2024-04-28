@@ -12,7 +12,13 @@ if [[ "$os_name" == "Darwin" ]]; then
 
 # Check if the OS is Linux
 elif [[ "$os_name" == "Linux" ]]; then
-    echo "Linux detected."
+    export PATH=$PATH:$HOME/android-studio/bin
+    export ANDROID_HOME=$HOME/Android/Sdk
+    export PATH=$PATH:$ANDROID_HOME/emulator
+    export PATH=$PATH:$ANDROID_HOME/platform-tools
+    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    export PATH=$PATH:$JAVA_HOME/bin
+
 
 # Handle other operating systems
 else
