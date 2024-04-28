@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import { useThemedStyles } from '@styles/UseThemedStyles';
 
 type LocationInfoProps = {
   latitude: number,
@@ -7,10 +8,11 @@ type LocationInfoProps = {
 }
 
 const LocationInfo = ({latitude, longitude}: LocationInfoProps) => {
+  const style = useThemedStyles();
   return (
     <View>
-      <Text>Latitude: {latitude}</Text>
-      <Text>Longitude: {longitude}</Text>
+      <Text style={style.bodyText}>Latitude: {latitude}</Text>
+      <Text style={style.bodyText}>Longitude: {longitude}</Text>
     </View>
   );
 };

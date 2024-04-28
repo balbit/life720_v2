@@ -1,6 +1,19 @@
-import useState from 'react';
+import Geolocation, {GeolocationError} from '@react-native-community/geolocation';
+import {Location} from '@utils/types'
 
-const [lat, setLat] = useState(0);
-const [long, setLong] = useState(0);
-
-export {lat, setLat, long, setLong}
+export const getLocation = (successCallback: (location: Location) => void, errorCallback: (error: GeolocationError) => void, timeout: number) => {
+    Geolocation.requestAuthorization();
+    Geolocation.getCurrentPosition(
+      position => {
+        const location: Location = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        };
+        successCallback(location);
+      },
+      error => {
+        errorCallback(error);
+      },
+      { enableHighAccuracy: false, timeout: timeout }
+    );
+  };
