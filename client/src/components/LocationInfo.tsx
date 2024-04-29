@@ -17,8 +17,4 @@ const LocationInfo = ({latitude, longitude}: LocationInfoProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  // add styles later ?!?
-});
-
 export default LocationInfo;
