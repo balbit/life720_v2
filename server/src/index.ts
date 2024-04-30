@@ -1,5 +1,6 @@
 import express from 'express';
 import router from './routes/basicRoutes';
+import { add_user, get_friends, make_friends } from './models/basicModel';
 
 const app = express();
 
@@ -10,6 +11,31 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 })
+
+const run = async () => {
+  const ishank_id = await add_user("ishank");
+  const elliot_id = await add_user("elliot");
+  // const ishank_id = "user-5766399f"
+  // const elliot_id = "user-dbff6c59"
+
+  console.log(`ishank_id: ${ishank_id}`);
+  console.log(`elliot_id: ${elliot_id}`);
+
+  let ishank_friends = await get_friends(ishank_id);
+  let elliot_friends = await get_friends(elliot_id);
+  console.log(ishank_friends)
+  console.log(elliot_friends)
+
+  await make_friends(ishank_id, elliot_id);
+
+  ishank_friends = await get_friends(ishank_id);
+  elliot_friends = await get_friends(elliot_id);
+  console.log(ishank_friends)
+  console.log(elliot_friends)
+
+}
+
+run();
 
 
 // const express = require('express');

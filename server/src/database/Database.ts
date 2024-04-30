@@ -5,7 +5,7 @@
  */
 
 import { userID, Location } from '../types/types';
-import { HackyDatabase } from './hackyDatabase';
+import HackyDatabase from './hackyDatabase';
 
 export interface Database {
     /**

@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import { userID, Location } from '../types/types';
 import { Database } from './Database';
 
-export class HackyDatabase implements Database{
+class HackyDatabase implements Database{
     users: { [key: userID]: string } = {};
     friends: { [key: userID]: Array<userID>} = {};
     locations: { [key: userID]: Array<[number, Location]> } = {};
@@ -48,3 +48,5 @@ export class HackyDatabase implements Database{
         console.log(`LOCS: ${JSON.stringify(this.locations)}`)
     }
 }
+
+export default HackyDatabase
