@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import { userID, Location } from '../types/types';
+import { userID, Location } from '../utils/types';
 import { Database } from './Database';
 
 class HackyDatabase implements Database{

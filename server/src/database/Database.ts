@@ -4,7 +4,7 @@
  * This file defines the interface for a database interaction object.
  */
 
-import { userID, Location } from '../types/types';
+import { userID, Location } from '../utils/types';
 import HackyDatabase from './hackyDatabase';
 
 export interface Database {

@@ -1,6 +1,6 @@
 import express from 'express';
 import router from './routes/basicRoutes';
-import { add_user, get_friends, make_friends } from './models/basicModel';
+import { add_user, get_friends, make_friends, add_location, get_current_location } from './models/basicModel';
 
 const app = express();
 
@@ -15,8 +15,6 @@ app.listen(PORT, () => {
 const run = async () => {
   const ishank_id = await add_user("ishank");
   const elliot_id = await add_user("elliot");
-  // const ishank_id = "user-5766399f"
-  // const elliot_id = "user-dbff6c59"
 
   console.log(`ishank_id: ${ishank_id}`);
   console.log(`elliot_id: ${elliot_id}`);
@@ -32,6 +30,12 @@ const run = async () => {
   elliot_friends = await get_friends(elliot_id);
   console.log(ishank_friends)
   console.log(elliot_friends)
+
+  await add_location(ishank_id, new Date(), {latitude: 10, longitude: 10});
+  await new Promise((resolve) => { setTimeout(resolve, 2000); });
+  await add_location(ishank_id, new Date(), {latitude: 30, longitude: 40});
+
+  await get_current_location(ishank_id);
 
 }
 
