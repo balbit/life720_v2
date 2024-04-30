@@ -13,7 +13,7 @@ class HackyDatabase implements Database{
         return crypto.randomBytes(4).toString('hex');
     }
 
-    add_user = (name: string) => {
+    add_user = async (name: string) => {
         let uuid: userID = this.gen_id();
         this.users[uuid] = name;
         this.friends[uuid] = [];
@@ -21,24 +21,24 @@ class HackyDatabase implements Database{
         return uuid;
     }
 
-    get_friends = (uuid: userID) => {
+    get_friends = async (uuid: userID) => {
         return this.friends[uuid]
     }
 
-    make_friends = (p1_uuid: userID, p2_uuid: userID) => {
+    make_friends = async (p1_uuid: userID, p2_uuid: userID) => {
         this.friends[p1_uuid].push(p2_uuid);
         this.friends[p2_uuid].push(p1_uuid);
     }
 
-    add_location = (uuid: userID, timestamp: number, location: Location) => {
+    add_location = async (uuid: userID, timestamp: number, location: Location) => {
         this.locations[uuid].push([timestamp, location]);
     }
 
-    get_current_location = (uuid: userID) => {
+    get_current_location = async (uuid: userID) => {
         return this.locations[uuid][-1];
     }
 
-    get_friends_current_location = (uuid: userID) => {
+    get_friends_current_location = async (uuid: userID) => {
         return this.friends[uuid].map((uuid_2) => this.locations[uuid_2][-1][1])
     }
 

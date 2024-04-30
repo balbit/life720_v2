@@ -1,6 +1,6 @@
 import express from 'express';
 import router from './routes/basicRoutes';
-import { add_user, get_friends, make_friends, add_location, get_current_location, get_friends_current_location } from './models/basicModel';
+import database from './database/Database';
 
 const app = express();
 
@@ -21,28 +21,33 @@ const run = async () => {
   console.log(`ishank_id: ${ishank_id}`);
   console.log(`elliot_id: ${elliot_id}`);
 
-  let ishank_friends = await get_friends(ishank_id);
-  let elliot_friends = await get_friends(elliot_id);
+  let ishank_friends = await database.get_friends(ishank_id);
+  let elliot_friends = await database.get_friends(elliot_id);
   console.log(ishank_friends)
   console.log(elliot_friends)
 
-  await make_friends(ishank_id, elliot_id);
+  await database.make_friends(ishank_id, elliot_id);
 
-  ishank_friends = await get_friends(ishank_id);
-  elliot_friends = await get_friends(elliot_id);
+  ishank_friends = await database.get_friends(ishank_id);
+  elliot_friends = await database.get_friends(elliot_id);
   console.log(ishank_friends)
   console.log(elliot_friends)
 
-  await add_location(ishank_id, new Date(), {latitude: 10, longitude: 10});
-  await add_location(elliot_id, new Date(), {latitude: 10, longitude: 10});
+  const current_ts: number = new Date().getTime();
+
+  await database.add_location(ishank_id, current_ts, {latitude: 10, longitude: 10});
+  await database.add_location(elliot_id, current_ts, {latitude: 10, longitude: 10});
   await new Promise((resolve) => { setTimeout(resolve, 2000); });
-  await add_location(ishank_id, new Date(), {latitude: 30, longitude: 40});
+  await database.add_location(ishank_id, current_ts, {latitude: 30, longitude: 40});
 
-  const location = await get_current_location(ishank_id);
+  console.log("Getting current location")
+
+  const location = await database.get_current_location(ishank_id);
   console.log(location)
 
-  const location_2 = await get_friends_current_location(elliot_id);
+  const location_2 = await database.get_friends_current_location(elliot_id);
   console.log(location_2)
+  console.log("Done!")
 
 }
 
