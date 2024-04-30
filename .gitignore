@@ -1,5 +1,4 @@
 *node_modules*
-*dist*
 env.sh
 life720-*.json
-server/dist/*
+server/dist/
