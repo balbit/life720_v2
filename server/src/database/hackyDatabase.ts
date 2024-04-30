@@ -1,10 +1,11 @@
 import crypto from 'crypto'
-type UUID = string;
+import { userID, Location } from '../types/types';
+import { Database } from './Database';
 
-class Database {
-    users: { [key: UUID]: string } = {};
-    friends: { [key: UUID]: Array<UUID>} = {};
-    locations: { [key: UUID]: Array<Array<number>> } = {};
+export class HackyDatabase implements Database{
+    users: { [key: userID]: string } = {};
+    friends: { [key: userID]: Array<userID>} = {};
+    locations: { [key: userID]: Array<[number, Location]> } = {};
 
     constructor () {}
 
@@ -13,41 +14,37 @@ class Database {
     }
 
     add_user = (name: string) => {
-        let uuid: UUID = this.gen_id();
+        let uuid: userID = this.gen_id();
         this.users[uuid] = name;
         this.friends[uuid] = [];
         this.locations[uuid] = [];
         return uuid;
     }
 
-    get_friends = (uuid: UUID) => {
+    get_friends = (uuid: userID) => {
         return this.friends[uuid]
     }
 
-    add_friends = (p1_uuid: UUID, p2_uuid: UUID) => {
+    make_friends = (p1_uuid: userID, p2_uuid: userID) => {
         this.friends[p1_uuid].push(p2_uuid);
         this.friends[p2_uuid].push(p1_uuid);
     }
 
-    add_location = (uuid: UUID, timestamp: number, location: number) => {
+    add_location = (uuid: userID, timestamp: number, location: Location) => {
         this.locations[uuid].push([timestamp, location]);
     }
 
-    get_location = (uuid: UUID) => {
-        return this.locations[uuid];
+    get_current_location = (uuid: userID) => {
+        return this.locations[uuid][-1];
     }
 
-    get_friends_location = (uuid: UUID) => {
-        return this.friends[uuid].map((uuid_2) => this.locations[uuid_2])
+    get_friends_current_location = (uuid: userID) => {
+        return this.friends[uuid].map((uuid_2) => this.locations[uuid_2][-1][1])
     }
 
-    print = () => {
+    dump = () => {
         console.log(`USERS: ${JSON.stringify(this.users)}`);
         console.log(`FRIENDS: ${JSON.stringify(this.friends)}`);
         console.log(`LOCS: ${JSON.stringify(this.locations)}`)
     }
 }
-
-const database = new Database();
-
-export default database;
