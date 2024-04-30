@@ -1,4 +1,4 @@
-import db, {toTimestamp} from '../database/FireStore'
+import db, {toTimestamp, fromTimestamp} from '../database/FireStore'
 import { userID, Location } from '../utils/types';
 import { gen_id } from '../utils/utils';
 
@@ -33,7 +33,7 @@ export const get_friends = async (id: userID) => {
     if (!doc.exists) {
         console.log("No such id!\n");
     } else {
-        return doc.data();
+        return doc.data()?.["friends"];
     }
 };
 
@@ -79,21 +79,35 @@ export const add_location = async (id: userID, timestamp: Date, location: Locati
  * @param id 
  */
 export const get_current_location = async (id: userID): Promise<[Date, Location]> => {
-    console.log('got here! 1\n')
-    const snapshot = await locationsCollection.where('id', '==', id).orderBy('time').limit(1).get(); 
-    console.log('got here! 2\n')
-    console.log(snapshot)
-    console.log('got here! 3\n')
-    return [new Date(), {longitude: 0, latitude: 1}]
+    const snapshot = await locationsCollection
+        .where('id', '==', id)
+        .orderBy('time', 'desc')
+        .limit(1).get(); 
+    const entry = snapshot.docs[0].data()
+    return [fromTimestamp(entry["time"]), {longitude: entry["longitude"], latitude: entry["latitude"]}]
 };
 
-// /**
-//  * 
-//  * @param uuid 
-//  */
-// get_friends_current_location(id: userID): Array<Location>;
+/**
+ * 
+ * @param uuid 
+ */
+export const get_friends_current_location = async (userId: userID) => {
+    const friendsIds = await get_friends(userId);
+    if (!friendsIds) {
+        console.log("No friends found for the given user.");
+        return [];
+    }
 
-// /**
-//  * Prints the current state
-//  */
-// dump(): void;
+    const friendsLocations = await Promise.all(
+        friendsIds.map(async (friendId: string) => {
+            const data = await get_current_location(friendId);
+            return {
+                "friend": friendId,
+                "timestamp": data[0],
+                "location": data[1]
+            };
+        })
+    );
+
+    return friendsLocations;
+};

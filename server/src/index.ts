@@ -1,6 +1,6 @@
 import express from 'express';
 import router from './routes/basicRoutes';
-import { add_user, get_friends, make_friends, add_location, get_current_location } from './models/basicModel';
+import { add_user, get_friends, make_friends, add_location, get_current_location, get_friends_current_location } from './models/basicModel';
 
 const app = express();
 
@@ -13,8 +13,10 @@ app.listen(PORT, () => {
 })
 
 const run = async () => {
-  const ishank_id = await add_user("ishank");
-  const elliot_id = await add_user("elliot");
+  // const ishank_id = await add_user("ishank");
+  // const elliot_id = await add_user("elliot");
+  const ishank_id = "user-7ce7c2e4";
+  const elliot_id = "user-d1f1e35d";
 
   console.log(`ishank_id: ${ishank_id}`);
   console.log(`elliot_id: ${elliot_id}`);
@@ -32,10 +34,15 @@ const run = async () => {
   console.log(elliot_friends)
 
   await add_location(ishank_id, new Date(), {latitude: 10, longitude: 10});
+  await add_location(elliot_id, new Date(), {latitude: 10, longitude: 10});
   await new Promise((resolve) => { setTimeout(resolve, 2000); });
   await add_location(ishank_id, new Date(), {latitude: 30, longitude: 40});
 
-  await get_current_location(ishank_id);
+  const location = await get_current_location(ishank_id);
+  console.log(location)
+
+  const location_2 = await get_friends_current_location(elliot_id);
+  console.log(location_2)
 
 }
 
