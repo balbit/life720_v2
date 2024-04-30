@@ -44,6 +44,8 @@ export class FireStoreDB implements Database {
    */
   public add_user = async (name: userID) => {
       let id: userID = gen_id();
+
+      console.log(`Adding user with id: ${id} and name ${name}`);
       await this.users.doc(id).set({
           "name": name,
           "id": id,

@@ -21,6 +21,6 @@ export const sendLocation = async (req: Request, res: Response) => {
 }
 
 export const getLocation = async (req: Request, res: Response) => {
-    console.log(`GET_LOCATION: ${JSON.stringify(req.body)}`);
-    res.send(await database.get_friends_current_location(req.body.uuid))
+    console.log(`GET_LOCATION: ${JSON.stringify(req.query)}`);
+    res.send(await database.get_friends_current_location(req.query.uuid as string))
 }

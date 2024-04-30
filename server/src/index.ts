@@ -1,10 +1,13 @@
 import express from 'express';
+import cors from 'cors';
 import router from './routes/basicRoutes';
 import database from './database/Database';
 
 const app = express();
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+app.use(cors()) // allow cross-origin requests from any port
 app.use('/api', router);
 
 const PORT = 3000;
