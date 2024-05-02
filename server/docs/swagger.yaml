@@ -1,0 +1,151 @@
+paths:
+  /createUser:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '500':
+          description: Internal server error
+  /addFriend:
+    post:
+      summary: Add a friend to a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddFriendRequest'
+      responses:
+        '200':
+          description: Friend added successfully
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+  /sendLocation:
+    post:
+      summary: Send a location for a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendLocationRequest'
+      responses:
+        '200':
+          description: Location sent successfully
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+  /getLocation:
+    get:
+      summary: Get the current locations of a user's friends
+      parameters:
+        - in: query
+          name: userID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Locations retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLocationResponse'
+        '400':
+          description: Invalid userID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    AddFriendRequest:
+      type: object
+      properties:
+        userID:
+          type: string
+        friend:
+          type: string
+      required:
+        - userID
+        - friend
+    SendLocationRequest:
+      type: object
+      properties:
+        userID:
+          type: string
+        locationInfo:
+          $ref: '#/components/schemas/LocationInfo'
+      required:
+        - userID
+        - locationInfo
+    GetLocationRequest:
+      type: object
+      properties:
+        userID:
+          type: string
+      required:
+        - userID
+    GetLocationResponse:
+      type: object
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationInfo'
+    LocationInfo:
+      type: object
+      properties:
+        latitude:
+          type: number
+        longitude:
+          type: number
+        timestamp:
+          type: number
+      required:
+        - latitude
+        - longitude
+        - timestamp
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
