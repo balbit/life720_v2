@@ -1,3 +1,9 @@
+openapi: 3.0.0
+info:
+  title: API for Life720
+  version: 1.0.0
+  description: Yums
+
 paths:
   /createUser:
     post:
