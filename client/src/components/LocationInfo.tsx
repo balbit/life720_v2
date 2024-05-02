@@ -1,13 +1,10 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import { useThemedStyles } from '@styles/UseThemedStyles';
+import { Location } from '@/../../common/types/types';
 
-type LocationInfoProps = {
-  latitude: number,
-  longitude: number,
-}
 
-const LocationInfo = ({latitude, longitude}: LocationInfoProps) => {
+const LocationInfo = ({latitude, longitude}: Location) => {
   const style = useThemedStyles();
   return (
     <View>

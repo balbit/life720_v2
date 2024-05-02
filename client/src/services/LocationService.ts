@@ -1,5 +1,5 @@
 import Geolocation, {GeolocationError} from '@react-native-community/geolocation';
-import {Location} from '@utils/types'
+import {Location} from '@/../../common/types/types'
 
 export const getLocation = (successCallback: (location: Location) => void, errorCallback: (error: GeolocationError) => void, timeout: number) => {
     Geolocation.requestAuthorization();

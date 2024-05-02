@@ -113,7 +113,7 @@ export class FireStoreDB implements Database {
         .orderBy('time', 'desc')
         .limit(0).get(); 
       
-      const entry = snapshot.docs[0].data()
+      const entry = snapshot.docs[0].data();
       // const date: Date = fromTimestamp(entry["time"]);
       const location: Location = {longitude: entry["longitude"], latitude: entry["latitude"]};
       return [entry["time"], location];

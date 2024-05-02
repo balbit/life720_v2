@@ -1,4 +1,4 @@
-import {Location} from '@utils/types.ts'
+import {Location} from '@/../../common/types/types'
 
 export const sendLocation = (location: Location) => {
 fetch('http://10.29.191.69:3000/logger/', {
