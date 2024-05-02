@@ -3,8 +3,8 @@ import {sendLocation, getLocation, createUser, addFriend} from '../controllers/b
 
 const router = express.Router();
 
-router.post('/createuser', createUser);
-router.post('/addfriend', addFriend);
-router.post('/sendloc', sendLocation);
-router.get('/getloc', getLocation)
+router.post('/createUser', createUser);
+router.post('/addFriend', addFriend);
+router.post('/sendLocoation', sendLocation);
+router.get('/getLocation', getLocation)
 export default router
