@@ -1,165 +1,124 @@
-// const Firestore = require('@google-cloud/firestore');
-// import * as geofire from 'geofire');
-// import { Location } from '../types/types';
-
-// const db = new Firestore({
-//   projectId: process.env.GOOGLE_PROJECT_ID,
-//   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-// });
-
-// public toTimestamp = (date: Date) => {
-//   return Firestore.Timestamp.fromDate(date);
-// }
-
-// public toLocation = (location: Location) => {
-//   return Geofire.geohashForL
-// }
-
-// export default db;
-
-// const Firestore = require('@google-cloud/firestore');
 import FirebaseFirestore from '@google-cloud/firestore';
 import { Database } from './Database';
 import { userID, Location } from '../utils/types';
 import { gen_id } from '../utils/utils';
+import {UserInfo, LocationInfo} from '@/../../common/types/types';
 
 export class FireStoreDB implements Database {
-  private readonly db: FirebaseFirestore.Firestore;
-  private readonly users: FirebaseFirestore.CollectionReference;
-  private readonly friends: FirebaseFirestore.CollectionReference;
-  private readonly locations: FirebaseFirestore.CollectionReference;
+    private readonly db: FirebaseFirestore.Firestore;
+    private readonly users: FirebaseFirestore.CollectionReference;
+    private readonly friends: FirebaseFirestore.CollectionReference;
+    private readonly locations: FirebaseFirestore.CollectionReference;
 
-  public constructor() {
-    this.db = new FirebaseFirestore.Firestore({
-      projectId: process.env.GOOGLE_PROJECT_ID,
-      keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    });
-    this.users = this.db.collection('users');
-    this.friends = this.db.collection('friends');
-    this.locations = this.db.collection('locations');
-  }
+    public constructor() {
+        this.db = new FirebaseFirestore.Firestore({
+            projectId: process.env.GOOGLE_PROJECT_ID,
+            keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+        });
+        this.users = this.db.collection('users');
+        this.friends = this.db.collection('friends');
+        this.locations = this.db.collection('locations');
+    }
 
-  /**
-   * @inheritdoc
-   */
-  public add_user = async (name: userID) => {
-      let id: userID = gen_id();
+    public async addUser(name: string): Promise<userID> {
+        const userID = gen_id();
+        const userRef = await this.users.doc(userID).set({ id: userID, name: name });
+        return userID;
+    }
 
-      console.log(`Adding user with id: ${id} and name ${name}`);
-      await this.users.doc(id).set({
-          "name": name,
-          "id": id,
-      })
-      await this.friends.doc(id).set({
-          "friends": [id,]
-      })
-      return id;
-  };
-      
-  /**
-   * @inheritdoc
-   */
-  public get_friends = async (id: userID) => {
-      const doc = await this.friends.doc(id).get();
-      if (!doc.exists) {
-          console.log("No such id!\n");
-      } else {
-          return doc.data()?.["friends"];
-      }
-  };
+    public async getFriends(id: userID): Promise<Array<userID>> {
+        const friendDoc = await this.friends.doc(id).get();
+        if (!friendDoc.exists) {
+            throw new ReferenceError(`user with id ${id} not found`);
+        }
+        const friendData = friendDoc.data();
+        return friendData?.friends || [];
+    }
 
-  /**
-   * 
-   * @param id0 
-   * @param id1 
-   * @returns A promise that resolves when the operation is complete
-   * @throws Error if either id0 or id1 is not found, in a rejected promise
-   */
-  public async make_friends (id1: userID, id2: userID): Promise<void> {
-      const doc1 = await this.friends.doc(id1).get();
-      const doc2 = await this.friends.doc(id2).get();
-      if (!doc1.exists  || !doc2.exists) {
-        throw new Error("No such id!\n");
-      } else {
-          let user1_friends = doc1.data()?.["friends"];
-          let user2_friends = doc2.data()?.["friends"];
+    public async getUserInfo(id: userID): Promise<UserInfo> {
+        const userDoc = await this.users.doc(id).get();
+        if (!userDoc.exists) {
+            throw new ReferenceError(`User with id ${id} not found`);
+        }
+        const userData = userDoc.data();
+        return { id: id, name: userData?.name };
+    }
 
-          if (!user1_friends.includes(id2)) user1_friends.push(id2);
-          if (!user2_friends.includes(id1)) user2_friends.push(id1);
+    public async makeFriends(id1: userID, id2: userID): Promise<void> {
+        const friendsDoc1 = await this.friends.doc(id1).get();
+        const friendsDoc2 = await this.friends.doc(id2).get();
+        if (!friendsDoc1.exists || !friendsDoc2.exists) {
+            throw new ReferenceError(`One or both users not found`);
+        }
+        await this.friends.doc(id1).update({
+            friends: FirebaseFirestore.FieldValue.arrayUnion(id2),
+        });
+        await this.friends.doc(id2).update({
+            friends: FirebaseFirestore.FieldValue.arrayUnion(id1),
+        });
+    }
 
-          await this.friends.doc(id1).set({ "friends": user1_friends });
-          await this.friends.doc(id2).set({ "friends": user2_friends });
-      }
-  }
+    public async addLocation(id: userID, locationInfo: LocationInfo): Promise<void> {
+        const userDoc = await this.users.doc(id).get();
+        if (!userDoc.exists) {
+            throw new ReferenceError(`User with id ${id} not found`);
+        }
+        await this.locations.add({
+            location: new FirebaseFirestore.GeoPoint(locationInfo.location.latitude, locationInfo.location.longitude),
+            timestamp: locationInfo.timestamp,
+            userID: id,
+        });
+    }
 
-  /**
-   * @inheritdoc
-   */
-  public async add_location (id: userID, timestamp: number, location: Location): Promise<void> {
-      await this.locations.add({
-          id: id,
-          time: timestamp,
-          latitude: location.latitude,
-          longitude: location.longitude
-      });
-  }
+    public async getCurrentLocation(id: userID): Promise<LocationInfo> {
+        const userDoc = await this.users.doc(id).get();
+        if (!userDoc.exists) {
+            throw new ReferenceError(`User with id ${id} not found`);
+        }
+        const locationSnapshot = await this.locations
+            .where('userID', '==', id)
+            .orderBy('timestamp', 'desc')
+            .limit(1)
+            .get();
+        if (locationSnapshot.empty) {
+            throw new Error(`No locations found for user with id ${id}`);
+        }
+        const locationData = locationSnapshot.docs[0].data();
+        return {
+            location: {
+                latitude: locationData.location.latitude, 
+                longitude: locationData.location.longitude,
+            },
+            timestamp: locationData.timestamp,
+        };
+    }
 
-  /**
-   * @inheritdoc
-   */
-    public async get_current_location (id: userID): Promise<[number, Location]> {
-      const snapshot = await this.locations
-        .where('id', '==', id)
-        .orderBy('time', 'desc')
-        .limit(0).get(); 
-      
-      const entry = snapshot.docs[0].data();
-      // const date: Date = fromTimestamp(entry["time"]);
-      const location: Location = {longitude: entry["longitude"], latitude: entry["latitude"]};
-      return [entry["time"], location];
-    };
+    public async getFriendsCurrentLocation(id: userID): Promise<Array<LocationInfo>> {
+        const friends = await this.getFriends(id);
+        const friendLocations: Array<LocationInfo> = [];
+        for (const friendId of friends) {
+            try {
+                const location = await this.getCurrentLocation(friendId);
+                friendLocations.push(location);
+            } catch (error) {
+                console.error(`Error getting location for friend with id ${friendId}:`, error);
+            }
+        }
+        return friendLocations;
+    }
 
-  /**
-   * @inheritdoc
-   */
-  public async get_friends_current_location (userId: userID): Promise<Array<Location>> {
-      const friendsIds = await this.get_friends(userId);
-      if (!friendsIds) {
-          console.log("No friends found for the given user.");
-          return [];
-      }
-
-      const friendsLocations = await Promise.all(
-          friendsIds.map(async (friendId: string) => {
-              const data = await this.get_current_location(friendId);
-              return {
-                  "friend": friendId,
-                  "timestamp": data[1],
-                  "location": data[0]
-              };
-          })
-      );
-
-      return friendsLocations;
-  };
-
-  /**
-   * @inheritdoc
-   */
-  public dump(): void {
-      console.log(`USERS: ${JSON.stringify(this.users)}`);
-      console.log(`FRIENDS: ${JSON.stringify(this.friends)}`);
-      console.log(`LOCS: ${JSON.stringify(this.locations)}`)
-  }
+    public dump(): void {
+        console.log('Dumping Firestore database');
+    }
 }
 
 
-export const toTimestamp = (date: Date) => {
-  return FirebaseFirestore.Timestamp.fromDate(date);
+export function dateToTimestamp (date: Date): number {
+    return date.getTime();
 }
 
-export const fromTimestamp = (time: FirebaseFirestore.Timestamp) => {
-  return time.toDate();
+export const fromTimestamp = (time: number) => {
+  return new Date(time);
 }
 
 export default FireStoreDB;

@@ -5,8 +5,19 @@ export interface Location {
   longitude: number;
 }
 
-export interface LocationInfo{
+export interface LocationInfo {
   location: Location;
   timestamp: number;
-  accuracy: number | undefined;
+  accuracy?: number | undefined;
+}
+
+export interface UserInfo {
+  id: userID;
+  name: string;
+}
+
+export interface FullUserInfo {
+  user: UserInfo;
+  friends: UserInfo[];
+  location: LocationInfo;
 }
