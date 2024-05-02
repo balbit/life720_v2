@@ -7,47 +7,66 @@
 import { userID, Location } from '../utils/types';
 import HackyDatabase from './hackyDatabase';
 import FireStoreDB from './FireStore';
+import {LocationInfo, UserInfo} from '@/../../common/types/types';
 
 export interface Database {
     /**
-     * 
+     * Adds a user to the database
      * @param name 
+     * @returns the id of the user
+     * @throws Error if the user cannot be added
      */
-    add_user(name: userID): Promise<string>;
+    addUser(name: string): Promise<userID>;
     
     /**
-     * Get a list of friends for a given user
+     * Returns a list of all friends for a user
      * 
      * @param id 
      */
-    get_friends(id: userID): Promise<string[]>;
+    getFriends(id: userID): Promise<Array<userID>>;
+
+    /**
+     * Returns basic information about a user
+     * 
+     * @param id
+     */
+    getUserInfo(id: userID): Promise<UserInfo>;
     
     /**
+     * Make two users friends
      * 
      * @param id1 
      * @param id2 
+     * @throws ReferenceError if either id0 or id1 is not found
      */
-    make_friends(id1: userID, id2: string): Promise<void>;
+    makeFriends(id1: userID, id2: userID): Promise<void>;
 
     /**
+     * Add a location to the database
      * 
      * @param id 
-     * @param timestamp 
-     * @param location 
+     * @param locationInfo
+     * @throws ReferenceError if the user is not found
+     * @throws Error if the location cannot be added
      */
-    add_location(id: userID, timestamp: number, location: Location): Promise<void>;
+    addLocation(id: userID, locationInfo: LocationInfo): Promise<void>;
 
     /**
+     * Returns the most recent location for a user
      * 
      * @param id 
+     * @throws ReferenceError if the user is not found
+     * @throws Error if there are no locations for the user
+     * @throws Error if the location cannot be found
      */
-    get_current_location(id: userID): Promise<[number, Location]>;
+    getCurrentLocation(id: userID): Promise<LocationInfo>;
 
     /**
+     * Returns the most recent location for all of a user's friends
      * 
-     * @param uuid 
+     * @param id
      */
-    get_friends_current_location(id: userID): Promise<Array<Location>>;
+    getFriendsCurrentLocation(id: userID): Promise<Array<LocationInfo>>;
     
     /**
      * Prints the current state
