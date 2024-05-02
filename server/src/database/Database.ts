@@ -5,7 +5,6 @@
  */
 
 import { userID, Location } from '../utils/types';
-import HackyDatabase from './hackyDatabase';
 import FireStoreDB from './FireStore';
 import {LocationInfo, UserInfo} from '@/../../common/types/types';
 
