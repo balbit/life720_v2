@@ -1,6 +1,23 @@
 import {LocationInfo, Location} from '@/../../common/types/types'
 import {SendLocationRequest} from '@/../../common/types/requests'
 import { getUserID } from './UserService';
+import {Config} from 'react-native-config'
+
+function serverAPILink(route: string): string {
+    const isProduction = process.env.NODE_ENV === 'prod';
+    const constants = Config.getConstants;
+    console.log(constants);
+    console.log(Config);
+    if (isProduction) {
+        throw new Error('Production API link not set');
+    } else {
+        const LOCAL_IP = process.env.LOCAL_IP;
+        const PORT = 3000;
+        const link = `http://${LOCAL_IP}:${PORT}/api/v1/` + route;
+        console.log(`API link: ${link}`);
+        return link;
+    }
+}
 
 export async function sendLocation(locationInfo: LocationInfo): Promise<void> {
     const location = locationInfo.location;
@@ -19,12 +36,8 @@ export async function sendLocation(locationInfo: LocationInfo): Promise<void> {
         body: JSON.stringify(sendLocationRequest)
     }
 
-    const LOCAL_IP = process.env.LOCAL_IP;
-    // TODO: Make request work for both local testing and production
-    // remember that localhost on the phone is not the same as localhost on the computer
-
     try {
-        const response = await fetch(`http://${LOCAL_IP}:3000/api/v1/sendLocation/`, requestInit);
+        const response = await fetch(serverAPILink('sendLocation/'), requestInit);
         if (!response.ok) {
             console.error(`Failed to send location: ${response.statusText}`);
             throw new Error(`Failed to send location: ${response.statusText}`);
@@ -33,8 +46,4 @@ export async function sendLocation(locationInfo: LocationInfo): Promise<void> {
     } catch (error) {
         console.error(error);
     }
-
-    // if (!response.status.toString().startsWith('2')) {
-    //     throw new Error(`Error ${response.status} Failed to send location: ${response.statusText}`);
-    // }
 }

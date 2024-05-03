@@ -11,6 +11,8 @@ import { ThemeProvider } from '@styles/ThemeContext';
 
 
 function App(): React.JSX.Element {
+  console.log(process.env);
+  console.log(process.env.LOCAL_IP);
   return (
     <ThemeProvider>
       <HomeScreen />
