@@ -5,7 +5,7 @@ import Title from '@components/Title'
 import LocationInfo from '@components/LocationInfo';
 import ThemeToggle from '@components/ThemeToggle';
 
-import {getLocation} from '@services/LocationService';
+import {getLocation, getLocationWithCallback} from '@services/LocationService';
 import {sendLocation} from '@services/ServerService';
 
 import { useThemedStyles } from '@styles/UseThemedStyles';
@@ -16,10 +16,10 @@ function HomeScreen(): React.JSX.Element {
   const [num, setNum] = useState(0);
   
   const updateLocation = () => {
-    getLocation(
+    getLocationWithCallback(
       (location) => {
         console.log(`Long: ${location.longitude}, Latitude: ${location.latitude}`)
-        sendLocation(location);
+        sendLocation({location: location, timestamp: Date.now()});
         setLat(location.latitude);
         setLong(location.longitude);
         setNum(num + 1);

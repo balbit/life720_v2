@@ -13,10 +13,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cors()) // allow cross-origin requests from any port
-app.use('/api', router);
+app.use('/api/v1/', router);
 
 const PORT = 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
 
@@ -29,5 +29,7 @@ const run = async () => {
   console.log("Done!")
 
 }
+
+export { app, server }
 
 run();
