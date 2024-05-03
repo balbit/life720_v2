@@ -14,12 +14,20 @@ export interface SendLocationRequest {
   locationInfo: LocationInfo;
 }
 
+export interface GetFriendLocationsRequest {
+  userID: userID;
+}
+
+export interface GetFriendLocationsResponse {
+  locations: LocationInfo[];
+}
+
 export interface GetLocationRequest {
   userID: userID;
 }
 
 export interface GetLocationResponse {
-  locations: LocationInfo[];
+  locationInfo: LocationInfo;
 }
 
 export interface ErrorResponse {
