@@ -19,7 +19,7 @@ export async function sendLocation(locationInfo: LocationInfo): Promise<void> {
         body: JSON.stringify(sendLocationRequest)
     }
 
-    const LOCAL_IP = process.env.LOCAL_IP; 
+    const LOCAL_IP = process.env.LOCAL_IP;
     // TODO: Make request work for both local testing and production
     // remember that localhost on the phone is not the same as localhost on the computer
 
