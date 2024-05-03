@@ -5,7 +5,7 @@ import database from './database/Database';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
-const app = express();
+export const app = express();
 
 const swaggerDocument = YAML.load('./docs/swagger.yaml');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -13,7 +13,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cors()) // allow cross-origin requests from any port
-app.use('/api', router);
+app.use('/api/v1/', router);
 
 const PORT = 3000;
 app.listen(PORT, () => {
