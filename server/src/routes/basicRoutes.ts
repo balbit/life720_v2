@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post('/createUser', createUser);
 router.post('/addFriend', addFriend);
-router.post('/sendLocoation', sendLocation);
+router.post('/sendLocation', sendLocation);
 router.get('/getLocation', getLocation)
 export default router

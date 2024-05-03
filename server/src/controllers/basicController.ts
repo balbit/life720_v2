@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 // import database from '../database/Database';
-import { CreateUserRequest, AddFriendRequest, SendLocationRequest, GetLocationRequest, GetLocationResponse, ErrorResponse } from '@/../../common/types/requests';
+import { CreateUserRequest, AddFriendRequest, SendLocationRequest, GetLocationRequest, GetLocationResponse, ErrorResponse } from '@/../../../common/types/requests';
 
 import database from '../database/Database';
 

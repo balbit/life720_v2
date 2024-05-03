@@ -6,7 +6,7 @@
 
 import { userID, Location } from '../utils/types';
 import FireStoreDB from './FireStore';
-import {LocationInfo, UserInfo} from '@/../../common/types/types';
+import {LocationInfo, UserInfo} from '@/../../../common/types/types';
 
 export interface Database {
     /**

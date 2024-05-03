@@ -2,7 +2,7 @@ import FirebaseFirestore from '@google-cloud/firestore';
 import { Database } from './Database';
 import { userID, Location } from '../utils/types';
 import { gen_id } from '../utils/utils';
-import {UserInfo, LocationInfo} from '@/../../common/types/types';
+import {UserInfo, LocationInfo} from '@/../../../common/types/types';
 
 export class FireStoreDB implements Database {
     private readonly db: FirebaseFirestore.Firestore;
