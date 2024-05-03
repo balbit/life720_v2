@@ -5,7 +5,7 @@ import database from './database/Database';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
-export const app = express();
+const app = express();
 
 const swaggerDocument = YAML.load('./docs/swagger.yaml');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -16,7 +16,7 @@ app.use(cors()) // allow cross-origin requests from any port
 app.use('/api/v1/', router);
 
 const PORT = 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
 
@@ -29,5 +29,7 @@ const run = async () => {
   console.log("Done!")
 
 }
+
+export { app, server }
 
 run();

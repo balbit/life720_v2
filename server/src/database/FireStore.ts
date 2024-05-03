@@ -20,6 +20,15 @@ export class FireStoreDB implements Database {
         this.locations = this.db.collection('locations');
     }
 
+    private async userExists(id: userID): Promise<boolean> {
+        const userDoc = await this.users.doc(id).get();
+        return userDoc.exists;
+    }
+
+    private async createFriendDoc(id: userID): Promise<void> {
+        await this.friends.doc(id).set({ friends: [id] });
+    }
+
     public async addUser(name: string): Promise<userID> {
         const userID = gen_id();
         const userRef = await this.users.doc(userID).set({ id: userID, name: name });
@@ -45,10 +54,24 @@ export class FireStoreDB implements Database {
     }
 
     public async makeFriends(id1: userID, id2: userID): Promise<void> {
-        const friendsDoc1 = await this.friends.doc(id1).get();
-        const friendsDoc2 = await this.friends.doc(id2).get();
+        if (!await this.userExists(id1)) {
+            throw new ReferenceError(`User with id ${id1} not found`);
+        }
+        if (!await this.userExists(id2)) {
+            throw new ReferenceError(`User with id ${id2} not found`);
+        }
+        let friendsDoc1 = await this.friends.doc(id1).get();
+        let friendsDoc2 = await this.friends.doc(id2).get();
+        if (!friendsDoc1.exists) {
+            await this.createFriendDoc(id1);
+            friendsDoc1 = await this.friends.doc(id1).get();
+        }
+        if (!friendsDoc2.exists) {
+            await this.createFriendDoc(id2);
+            friendsDoc2 = await this.friends.doc(id2).get();
+        }
         if (!friendsDoc1.exists || !friendsDoc2.exists) {
-            throw new ReferenceError(`One or both users not found`);
+            throw new Error(`Could not create friend document for users with ids ${id1} and ${id2}`);
         }
         await this.friends.doc(id1).update({
             friends: FirebaseFirestore.FieldValue.arrayUnion(id2),
@@ -59,8 +82,7 @@ export class FireStoreDB implements Database {
     }
 
     public async addLocation(id: userID, locationInfo: LocationInfo): Promise<void> {
-        const userDoc = await this.users.doc(id).get();
-        if (!userDoc.exists) {
+        if (!await this.userExists(id)) {
             throw new ReferenceError(`User with id ${id} not found`);
         }
         await this.locations.add({

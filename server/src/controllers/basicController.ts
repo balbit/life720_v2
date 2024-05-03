@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 // import database from '../database/Database';
-import { CreateUserRequest, AddFriendRequest, SendLocationRequest, GetLocationRequest, GetLocationResponse, ErrorResponse } from '@/../../common/types/requests';
+import { CreateUserRequest, AddFriendRequest, SendLocationRequest, GetLocationRequest, 
+    GetLocationResponse, GetFriendLocationsRequest, GetFriendLocationsResponse, 
+    ErrorResponse } from '@/../../common/types/requests';
 
 import database from '../database/Database';
 
@@ -44,7 +46,7 @@ export const sendLocation = async (req: Request<{}, {}, SendLocationRequest>, re
     }
 };
 
-export const getLocation = async (req: Request<GetLocationRequest>, res: Response<GetLocationResponse | ErrorResponse>) => {
+export const getFriendLocations = async (req: Request<GetFriendLocationsRequest>, res: Response<GetFriendLocationsResponse | ErrorResponse>) => {
     try {
         console.log(`GET_LOCATION: ${JSON.stringify(req.query)}`);
         if (typeof req.query.userID !== 'string' || req.query.userID === '') {
@@ -61,3 +63,21 @@ export const getLocation = async (req: Request<GetLocationRequest>, res: Respons
         }
     }
 };
+
+export const getLocation = async (req: Request<GetLocationRequest>, res: Response<GetLocationResponse | ErrorResponse>) => {
+    try {
+        console.log(`GET_LOCATION: ${JSON.stringify(req.query)}`);
+        if (typeof req.query.userID !== 'string' || req.query.userID === '') {
+            throw new ReferenceError("Invalid user ID");
+        }
+        const location = await database.getCurrentLocation(req.query.userID);
+        res.status(200).send({ locationInfo: location });
+    } catch (error) {
+        console.error('Error getting location:', error);
+        if (error instanceof ReferenceError) {
+            res.status(404).send({ message: 'User not found' });
+        } else {
+            res.status(500).send({ message: 'Internal server error' });
+        }
+    }
+}
