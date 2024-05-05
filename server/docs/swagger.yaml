@@ -60,6 +60,36 @@ paths:
           description: Internal server error
   /getLocation:
     get:
+      summary: Get the current location of a user
+      parameters:
+        - in: query
+          name: userID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Location retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationInfo'
+        '400':
+          description: Invalid userID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+  /getFriendLocations:
+    get:
       summary: Get the current locations of a user's friends
       parameters:
         - in: query
@@ -129,6 +159,18 @@ components:
       required:
         - userID
     GetLocationResponse:
+      type: object
+      properties:
+        locationInfo:
+          $ref: '#/components/schemas/LocationInfo'
+    GetFriendLocationsRequest:
+      type: object
+      properties:
+        userID:
+          type: string
+      required:
+        - userID
+    GetFriendLocationsResponse:
       type: object
       properties:
         locations:
