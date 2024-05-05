@@ -1,6 +1,8 @@
 "use client"
 import { useState } from 'react';
 import ResponseDisplay from '../components/ResponseDisplay';
+import {LocationInfo} from '@/../../common/types/types';
+import {SendLocationRequest} from '@/../../common/types/requests';
 
 export default function Home() {
   const [username, setUsername] = useState('');
@@ -11,7 +13,7 @@ export default function Home() {
   const [responseMessages, setResponseMessages] = useState<{ code: number; body: string }[]>([]);
 
   async function handleCreateUser() {
-    const response = await fetch(queryLink + '/api/createuser', {
+    const response = await fetch(queryLink + '/api/createUser', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: username }),
@@ -31,17 +33,27 @@ export default function Home() {
   }
 
   async function handleSendLocation() {
-    const response = await fetch(queryLink + '/api/sendloc', {
+    const locationInfo: LocationInfo = {
+      location: { latitude: 69, longitude: 69 },
+      timestamp: Date.now(),
+    };
+    const request : SendLocationRequest = {
+      userID: id,
+      locationInfo: locationInfo,
+    };
+
+
+    const response = await fetch(queryLink + '/api/sendLocation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ location }),
+      body: JSON.stringify(request),
     });
     const body = await response.text();
     setResponseMessages((prevMessages) => [...prevMessages, { code: response.status, body }]);
   }
 
   async function handleGetLocation() {
-    const response = await fetch(`${queryLink}/api/getloc?uuid=${id}`, {
+    const response = await fetch(`${queryLink}/api/getLocation?userID=${id}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
