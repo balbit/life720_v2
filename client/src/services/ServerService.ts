@@ -65,12 +65,13 @@ export async function getFriendLocations(): Promise<Array<LocationInfo>> {
     }
 
     try {
-        const response = await fetch(serverAPILink(`getFriendLocation/${userID}`), requestInit);
+        const response = await fetch(serverAPILink(`getFriendLocations?userID=${userID}`), requestInit);
         if (!response.ok) {
             console.error(`Failed to get friend location: ${response.statusText}`);
             throw new Error(`Failed to get friend location: ${response.statusText}`);
         }
         const getFriendLocationsResponse: GetFriendLocationsResponse = await response.json();
+        console.log(`Successfully got friend locations: ${getFriendLocationsResponse.locations.length}`);
         return getFriendLocationsResponse.locations;
     } catch (error) {
         console.error(error);

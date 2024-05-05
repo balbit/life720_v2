@@ -36,5 +36,10 @@ export const getStyles = (theme: 'light' | 'dark') => {
       top: 20,
       right: 20,
     },
+    map: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+    }
   });
 };
