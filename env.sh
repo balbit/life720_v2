@@ -21,7 +21,6 @@ elif [[ "$os_name" == "Linux" && "$user" == "bo" ]]; then
     export PATH=$PATH:$JAVA_HOME/bin
     export LOCAL_IP="10.29.219.234"
 
-
 # Handle other operating systems
 else
     echo "Unsupported operating system: $os_name"

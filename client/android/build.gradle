@@ -17,5 +17,12 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
     }
 }
+buildTypes.each {
+    it.buildConfigField "String", "GOOGLE_MAPS_API_KEY", "\"${System.getenv("GOOGLE_MAPS_API_KEY")}\""
+}
+
+buildTypes.each {
+
+}
 
 apply plugin: "com.facebook.react.rootproject"
