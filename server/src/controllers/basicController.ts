@@ -48,7 +48,7 @@ export const sendLocation = async (req: Request<{}, {}, SendLocationRequest>, re
 
 export const getFriendLocations = async (req: Request<GetFriendLocationsRequest>, res: Response<GetFriendLocationsResponse | ErrorResponse>) => {
     try {
-        console.log(`GET_LOCATION: ${JSON.stringify(req.query)}`);
+        console.log(`GET_LOCATION Friends: ${JSON.stringify(req.query)}`);
         if (typeof req.query.userID !== 'string' || req.query.userID === '') {
             throw new ReferenceError("Invalid user ID");
         }
